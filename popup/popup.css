@@ -1,0 +1,21 @@
+html {
+    border: 4px ridge white;
+}
+
+body {
+    background-color: black;
+}
+
+h1 {
+    color: white;
+}
+
+#currVer {
+    background-color: rgba(95, 59, 162, 0.5);
+    position: left;
+    border-radius: 15px;
+    width: 20%;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
