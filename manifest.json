@@ -1,19 +1,22 @@
 {
-    "manifest_version": 3,
-    "name": "Hello Extensions",
-    "description": "Base Level Extension",
-    "version": "1.0",
-    "action": {
-      "default_popup": "popup/popup.html",
-      "default_icon": "peppino.png"
-    },
-    "content_scripts": [
-      {
-        "js": ["scripts/script.js"],
-        "matches": [
-          "<all_urls>",
-          "file:///"
-        ]
-      }
-    ]
+  "manifest_version": 3,
+  "name": "Hello Extensions",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "graphics/peppino.png"
+  },
+  "content_scripts": [
+    {
+      "js": [ "script.js" ],
+      "matches": ["<all_urls>", "file:///"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["graphics/*.png"],
+      "matches": ["https://*/*"]
+    }
+  ]
 }
