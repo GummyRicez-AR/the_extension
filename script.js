@@ -3,8 +3,7 @@ var image = document.createElement("img");
 
 document.body.onload = () => {
     image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
-    image.style.width = "200px";
-    image.style.height = "300px";
+    image.style.width = "10%";
     image.style.position = "fixed";
     image.style.bottom = "0px";
     image.style.left = "0px";
@@ -23,34 +22,28 @@ if (bigHeader) {
     bigHeader.style.color = "red";
 }
 
-
 function moveFrisk() {
-    var friskTargetX = Math.floor(Math.random() * 1000);
-    console.log(friskTargetX);
+    var friskTargetX = Math.floor(Math.random() * window.innerWidth);
     if (friskXPos < friskTargetX) {
-        console.log("yes");
         interval = setInterval( () => {
-            console.log("interval+");
-            friskXPos += 2;
+            friskXPos += 3;
             image.style.left = friskXPos.toString() + "px";
             if (friskXPos >= friskTargetX) {
                 image.style.left = friskTargetX.toString() + "px";
                 friskXPos = friskTargetX;
                 clearInterval(interval);
-                setTimeout(moveFrisk, 1000);
+                setTimeout(moveFrisk, Math.floor((Math.random() * 2000) + 1000));
             }
         }, 20);
     } else {
-        console.log("no");
         interval = setInterval( () => {
-            console.log("interval-");
-            friskXPos -= 2; 
+            friskXPos -= 3; 
             image.style.left = friskXPos.toString() + "px";
             if (friskXPos <= friskTargetX) {
                 image.style.left = friskTargetX.toString() + "px";
                 friskXPos = friskTargetX;
                 clearInterval(interval);
-                setTimeout(moveFrisk, 1000);
+                setTimeout(moveFrisk, Math.floor((Math.random() * 2000) + 1000));
             }
         }, 20);
     }
