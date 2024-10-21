@@ -23,6 +23,7 @@ if (bigHeader) {
     bigHeader.style.color = "red";
 }
 
+
 function moveFrisk() {
     var friskTargetX = Math.floor(Math.random() * 1000);
     console.log(friskTargetX);
@@ -36,6 +37,7 @@ function moveFrisk() {
                 image.style.left = friskTargetX.toString() + "px";
                 friskXPos = friskTargetX;
                 clearInterval(interval);
+                setTimeout(moveFrisk, 1000);
             }
         }, 20);
     } else {
@@ -48,6 +50,7 @@ function moveFrisk() {
                 image.style.left = friskTargetX.toString() + "px";
                 friskXPos = friskTargetX;
                 clearInterval(interval);
+                setTimeout(moveFrisk, 1000);
             }
         }, 20);
     }

@@ -12,7 +12,7 @@ h1 {
 
 #currVer {
     background-color: rgba(95, 59, 162, 0.5);
-    position: left;
+    margin-left: 80%;
     border-radius: 15px;
     width: 20%;
     color: white;
