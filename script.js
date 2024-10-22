@@ -13,8 +13,10 @@ document.body.onload = () => {
 
 const elements = document.querySelectorAll("p");
 const bigHeader = document.querySelector("h1");
+const regex = /sou|SOU/g;
 
 elements.forEach(element => {
+    element.innerHTML = element.innerHTML.replaceAll(regex, "<span><a href='https://www.youtube.com/watch?v=CJATWt1KbMA'>sou</a></span>")
     element.innerHTML += " My wiiiiife!"
 });
 
@@ -23,8 +25,9 @@ if (bigHeader) {
 }
 
 function moveFrisk() {
-    var friskTargetX = Math.floor(Math.random() * window.innerWidth);
+    var friskTargetX = Math.floor(Math.random() * (window.innerWidth * 0.9));
     if (friskXPos < friskTargetX) {
+        image.style.transform = "scaleX(-1)";
         interval = setInterval( () => {
             friskXPos += 3;
             image.style.left = friskXPos.toString() + "px";
@@ -36,6 +39,7 @@ function moveFrisk() {
             }
         }, 20);
     } else {
+        image.style.transform = "scaleX(1)";
         interval = setInterval( () => {
             friskXPos -= 3; 
             image.style.left = friskXPos.toString() + "px";
