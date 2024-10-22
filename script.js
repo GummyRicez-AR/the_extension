@@ -8,14 +8,10 @@ document.body.onload = () => {
     image.style.position = "fixed";
     image.style.bottom = "0px";
     image.style.left = "0px";
-    document.body.append(image);
-    /* testing stuff
     let frisk1 = new Frisk();
     let frisk2 = new Frisk();
     let frisk3 = new Frisk();
-    console.log(Frisk.friskList);
-    */
-    moveFrisk();
+    friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
 }
 
 const elements = document.querySelectorAll("p");
@@ -78,14 +74,14 @@ class Frisk {
         this.#x = 0;
         this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
         Frisk.friskList.push(this);
-        console.log("Successfully made");
+        document.body.append(this.image);
     }
 
     #moveLeft() {
         this.#x -= 3;
         this.image.style.transform = "scaleX(1)";
         this.image.style.left = this.#x.toString() + "px";
-        if (this.#x >= this.#target) {
+        if (this.#x <= this.#target) { // if frisk is to the left of target after moving
             this.image.style.left = this.#target.toString() + "px";
             this.#x = this.#target;
             this.currentlyMoving = false;
@@ -98,7 +94,7 @@ class Frisk {
         this.#x += 3;
         this.image.style.transform = "scaleX(-1)";
         this.image.style.left = this.#x.toString() + "px";
-        if (this.#x >= this.#target) {
+        if (this.#x >= this.#target) { // if frisk is to the right of target after moving
             this.image.style.left = this.#target.toString() + "px";
             this.#x = this.#target;
             this.currentlyMoving = false;
@@ -116,12 +112,16 @@ class Frisk {
     }
 
     static moveFrisks() {
-        for (i in Frisk.friskList) {
+        Frisk.friskList.forEach(function (i) {
             if (i.currentlyMoving) {
                 i.moveFrisk();
             } else {
                 i.timer -= MOVE_INTERVAL;
+                if (i.timer <= 0) {
+                    i.timer = 0;
+                    i.currentlyMoving = true;
+                }
             }
-        }
+        });
     }
 }
