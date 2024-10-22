@@ -1,5 +1,6 @@
 var friskXPos = 0;
 var image = document.createElement("img");
+const MOVE_INTERVAL = 20;
 
 document.body.onload = () => {
     image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
@@ -8,12 +9,18 @@ document.body.onload = () => {
     image.style.bottom = "0px";
     image.style.left = "0px";
     document.body.append(image);
+    /* testing stuff
+    let frisk1 = new Frisk();
+    let frisk2 = new Frisk();
+    let frisk3 = new Frisk();
+    console.log(Frisk.friskList);
+    */
     moveFrisk();
 }
 
 const elements = document.querySelectorAll("p");
 const bigHeader = document.querySelector("h1");
-const regex = /sou|SOU/g;
+const regex = /sou|SOU|Sou/g;
 
 elements.forEach(element => {
     element.innerHTML = element.innerHTML.replaceAll(regex, "<span><a href='https://www.youtube.com/watch?v=CJATWt1KbMA'>sou</a></span>")
@@ -25,7 +32,7 @@ if (bigHeader) {
 }
 
 function moveFrisk() {
-    var friskTargetX = Math.floor(Math.random() * (window.innerWidth * 0.9));
+    let friskTargetX = Math.floor(Math.random() * (window.innerWidth * 0.9));
     if (friskXPos < friskTargetX) {
         image.style.transform = "scaleX(-1)";
         interval = setInterval( () => {
@@ -50,5 +57,71 @@ function moveFrisk() {
                 setTimeout(moveFrisk, Math.floor((Math.random() * 2000) + 1000));
             }
         }, 20);
+    }
+}
+
+// EXPERIMENTAL: having multiple frisks on the screen
+class Frisk {
+    static friskList = [];
+    image = null;
+    #x = 0;
+    #target = 0;
+    currentlyMoving = true;
+    timer = 0;
+    constructor() {
+        this.image = document.createElement("img");
+        this.image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
+        this.image.style.width = "10%";
+        this.image.style.position = "fixed";
+        this.image.style.bottom = "0px";
+        this.image.style.left = "0px";
+        this.#x = 0;
+        this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+        Frisk.friskList.push(this);
+        console.log("Successfully made");
+    }
+
+    #moveLeft() {
+        this.#x -= 3;
+        this.image.style.transform = "scaleX(1)";
+        this.image.style.left = this.#x.toString() + "px";
+        if (this.#x >= this.#target) {
+            this.image.style.left = this.#target.toString() + "px";
+            this.#x = this.#target;
+            this.currentlyMoving = false;
+            this.timer = Math.floor((Math.random() * 2000) + 1000);
+            this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+        }
+    }
+
+    #moveRight() {
+        this.#x += 3;
+        this.image.style.transform = "scaleX(-1)";
+        this.image.style.left = this.#x.toString() + "px";
+        if (this.#x >= this.#target) {
+            this.image.style.left = this.#target.toString() + "px";
+            this.#x = this.#target;
+            this.currentlyMoving = false;
+            this.timer = Math.floor((Math.random() * 2000) + 1000);
+            this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+        }
+    }
+
+    moveFrisk() {
+        if (this.#x > this.#target) { // frisk wants to move to the left
+            this.#moveLeft();
+        } else { // frisk wants to move to the right
+            this.#moveRight();
+        }
+    }
+
+    static moveFrisks() {
+        for (i in Frisk.friskList) {
+            if (i.currentlyMoving) {
+                i.moveFrisk();
+            } else {
+                i.timer -= MOVE_INTERVAL;
+            }
+        }
     }
 }
