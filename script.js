@@ -1,17 +1,30 @@
 var friskXPos = 0;
 var image = document.createElement("img");
+var spawnButton = document.createElement("button");
+spawnButton.id = "spawner";
+var deleteButton = document.createElement("button");
+deleteButton.id = "remover";
 const MOVE_INTERVAL = 20;
+const FRISK_LIMIT = 10;
 
 document.body.onload = () => {
-    image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
-    image.style.width = "10%";
-    image.style.position = "fixed";
-    image.style.bottom = "0px";
-    image.style.left = "0px";
+    // upon webpage loading, create some frisks
     let frisk1 = new Frisk();
     let frisk2 = new Frisk();
     let frisk3 = new Frisk();
     friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
+
+    // add a button capable of spawning more frisks and an event listener for the button
+    spawnButton.position = "fixed";
+    spawnButton.innerHTML = "ADD MORE";
+    document.body.append(spawnButton);
+    document.getElementById("spawner").addEventListener("click", spawnFrisk);
+
+    // add another button capable of deleting frisks
+    deleteButton.position = "fixed";
+    deleteButton.innerHTML = "DELETE";
+    document.body.append(deleteButton);
+    document.getElementById("remover").addEventListener("click", deleteFrisk);
 }
 
 const elements = document.querySelectorAll("p");
@@ -25,35 +38,6 @@ elements.forEach(element => {
 
 if (bigHeader) {
     bigHeader.style.color = "red";
-}
-
-function moveFrisk() {
-    let friskTargetX = Math.floor(Math.random() * (window.innerWidth * 0.9));
-    if (friskXPos < friskTargetX) {
-        image.style.transform = "scaleX(-1)";
-        interval = setInterval( () => {
-            friskXPos += 3;
-            image.style.left = friskXPos.toString() + "px";
-            if (friskXPos >= friskTargetX) {
-                image.style.left = friskTargetX.toString() + "px";
-                friskXPos = friskTargetX;
-                clearInterval(interval);
-                setTimeout(moveFrisk, Math.floor((Math.random() * 2000) + 1000));
-            }
-        }, 20);
-    } else {
-        image.style.transform = "scaleX(1)";
-        interval = setInterval( () => {
-            friskXPos -= 3; 
-            image.style.left = friskXPos.toString() + "px";
-            if (friskXPos <= friskTargetX) {
-                image.style.left = friskTargetX.toString() + "px";
-                friskXPos = friskTargetX;
-                clearInterval(interval);
-                setTimeout(moveFrisk, Math.floor((Math.random() * 2000) + 1000));
-            }
-        }, 20);
-    }
 }
 
 // EXPERIMENTAL: having multiple frisks on the screen
@@ -123,5 +107,19 @@ class Frisk {
                 }
             }
         });
+    }
+}
+
+function spawnFrisk() {
+    if (Frisk.friskList.length < FRISK_LIMIT) {
+        let frisk = new Frisk();
+    }
+}
+
+function deleteFrisk() {
+    if (Frisk.friskList.length > 0) {
+        friskPop = Frisk.friskList.pop();
+        friskPop.image.remove();
+        delete friskPop;
     }
 }
