@@ -8,21 +8,23 @@ const MOVE_INTERVAL = 20;
 const FRISK_LIMIT = 10;
 
 document.body.onload = () => {
-    // upon webpage loading, create some frisks
-    let frisk1 = new Frisk();
-    let frisk2 = new Frisk();
-    let frisk3 = new Frisk();
+    // upon webpage loading, start the interval 
     friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
 
     // add a button capable of spawning more frisks and an event listener for the button
-    spawnButton.position = "fixed";
+    spawnButton.style.position = "fixed";
+    spawnButton.style.bottom = "0px";
     spawnButton.innerHTML = "ADD MORE";
+    spawnButton.style.zIndex = "100";
     document.body.append(spawnButton);
     document.getElementById("spawner").addEventListener("click", spawnFrisk);
 
     // add another button capable of deleting frisks
-    deleteButton.position = "fixed";
+    deleteButton.style.position = "fixed";
+    deleteButton.style.bottom = "0px";
+    deleteButton.style.right = "0px";
     deleteButton.innerHTML = "DELETE";
+    deleteButton.style.zIndex = "100";
     document.body.append(deleteButton);
     document.getElementById("remover").addEventListener("click", deleteFrisk);
 }
@@ -46,8 +48,10 @@ class Frisk {
     image = null;
     #x = 0;
     #target = 0;
+    #moveSpeed = 0;
     currentlyMoving = true;
     timer = 0;
+
     constructor() {
         this.image = document.createElement("img");
         this.image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
@@ -55,35 +59,43 @@ class Frisk {
         this.image.style.position = "fixed";
         this.image.style.bottom = "0px";
         this.image.style.left = "0px";
+        this.#moveSpeed = Math.floor((Math.random() * 2) + 2); // random value between 2 - 4
         this.#x = 0;
-        this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+        this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9)); // random between 0% - 90% of window width
         Frisk.friskList.push(this);
         document.body.append(this.image);
+        this.image.addEventListener("click", () => {
+            // do something here ig
+        });
     }
 
     #moveLeft() {
-        this.#x -= 3;
+        this.#x -= this.#moveSpeed;
         this.image.style.transform = "scaleX(1)";
         this.image.style.left = this.#x.toString() + "px";
         if (this.#x <= this.#target) { // if frisk is to the left of target after moving
             this.image.style.left = this.#target.toString() + "px";
             this.#x = this.#target;
             this.currentlyMoving = false;
+            // decide new timer, target, and move speed
             this.timer = Math.floor((Math.random() * 2000) + 1000);
             this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+            this.#moveSpeed = Math.floor((Math.random() * 2) + 2);
         }
     }
 
     #moveRight() {
-        this.#x += 3;
+        this.#x += this.#moveSpeed;
         this.image.style.transform = "scaleX(-1)";
         this.image.style.left = this.#x.toString() + "px";
         if (this.#x >= this.#target) { // if frisk is to the right of target after moving
             this.image.style.left = this.#target.toString() + "px";
             this.#x = this.#target;
             this.currentlyMoving = false;
+            // decide new timer, target, and move speed
             this.timer = Math.floor((Math.random() * 2000) + 1000);
             this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9));
+            this.#moveSpeed = Math.floor((Math.random() * 2) + 2);
         }
     }
 
