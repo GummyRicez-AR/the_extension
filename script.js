@@ -1,5 +1,3 @@
-var friskXPos = 0;
-var image = document.createElement("img");
 var spawnButton = document.createElement("button");
 spawnButton.id = "spawner";
 var deleteButton = document.createElement("button");
@@ -45,7 +43,7 @@ if (bigHeader) {
 // EXPERIMENTAL: having multiple frisks on the screen
 class Frisk {
     static friskList = [];
-    image = null;
+    image = document.createElement("img");
     #x = 0;
     #target = 0;
     #moveSpeed = 0;
@@ -53,7 +51,6 @@ class Frisk {
     timer = 0;
 
     constructor() {
-        this.image = document.createElement("img");
         this.image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
         this.image.style.width = "10%";
         this.image.style.position = "fixed";
