@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "The Frisk Spawner",
   "description": "horrifying",
-  "version": "0.e621",
+  "version": "0.621",
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": "graphics/peppino.png"
