@@ -3,7 +3,7 @@ spawnButton.id = "spawner";
 var deleteButton = document.createElement("button");
 deleteButton.id = "remover";
 const MOVE_INTERVAL = 20;
-const FRISK_LIMIT = 10;
+const FRISK_LIMIT = 50;
 
 document.body.onload = () => {
     // upon webpage loading, start the interval 
