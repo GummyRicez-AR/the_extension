@@ -6,7 +6,7 @@ const MOVE_INTERVAL = 20;
 const FRISK_LIMIT = 50;
 
 document.body.onload = () => {
-    // upon webpage loading, start the interval 
+    // upon webpage loading, start the FRISK interval 
     friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
 
     // add a button capable of spawning more frisks and an event listener for the button
@@ -105,7 +105,7 @@ class Frisk {
     }
 
     static moveFrisks() {
-        Frisk.friskList.forEach(function (i) {
+        Frisk.friskList.forEach(i => {
             if (i.currentlyMoving) {
                 i.moveFrisk();
             } else {
