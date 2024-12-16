@@ -2,6 +2,8 @@ var spawnButton = document.createElement("button");
 spawnButton.id = "spawner";
 var deleteButton = document.createElement("button");
 deleteButton.id = "remover";
+var countLabel = document.createElement("p");
+countLabel.id = "counter";
 const MOVE_INTERVAL = 20;
 const FRISK_LIMIT = 50;
 
@@ -14,8 +16,10 @@ document.body.onload = () => {
     spawnButton.style.bottom = "0px";
     spawnButton.innerHTML = "ADD MORE";
     spawnButton.style.zIndex = "100";
+    spawnButton.style.height = "30px";
+    spawnButton.style.fontSize = "16px";
     document.body.append(spawnButton);
-    document.getElementById("spawner").addEventListener("click", spawnFrisk);
+    document.getElementById("spawner").addEventListener("click", SpawnFrisk);
 
     // add another button capable of deleting frisks
     deleteButton.style.position = "fixed";
@@ -23,8 +27,25 @@ document.body.onload = () => {
     deleteButton.style.right = "0px";
     deleteButton.innerHTML = "DELETE";
     deleteButton.style.zIndex = "100";
+    deleteButton.style.height = "30px";
+    deleteButton.style.fontSize = "16px";
     document.body.append(deleteButton);
-    document.getElementById("remover").addEventListener("click", deleteFrisk);
+    document.getElementById("remover").addEventListener("click", DeleteFrisk);
+
+    // add counter to count how mnay frisks there are
+    countLabel.style.position = "fixed";
+    countLabel.style.bottom = "10px";
+    countLabel.style.height = "25px";
+    countLabel.style.width = "100px";
+    countLabel.style.zIndex = "100";
+    //countLabel.style.backgroundColor = "gray";
+    countLabel.style.fontWeight = "bold";
+    countLabel.style.textAlign = "center";
+    countLabel.style.webkitTextStrokeColor = "black";
+    countLabel.style.webkitTextStrokeWidth = "1px";
+    countLabel.style.fontSize = "20px";
+    countLabel.innerHTML = ":3";
+    document.body.append(countLabel);
 }
 
 const elements = document.querySelectorAll("p");
@@ -32,8 +53,8 @@ const bigHeader = document.querySelector("h1");
 const regex = /sou|SOU|Sou/g;
 
 elements.forEach(element => {
-    element.innerHTML = element.innerHTML.replaceAll(regex, "<span><a href='https://www.youtube.com/watch?v=CJATWt1KbMA'>sou</a></span>")
-    element.innerHTML += " My wiiiiife!"
+    element.innerHTML = element.innerHTML.replaceAll(regex, "<span><a href='https://www.youtube.com/watch?v=CJATWt1KbMA'>sou</a></span>");
+    element.innerHTML += " My wiiiiife!";
 });
 
 if (bigHeader) {
@@ -119,16 +140,36 @@ class Frisk {
     }
 }
 
-function spawnFrisk() {
+function SpawnFrisk() {
     if (Frisk.friskList.length < FRISK_LIMIT) {
         new Frisk();
+        ChangeCountLabel();
     }
 }
 
-function deleteFrisk() {
+function DeleteFrisk() {
     if (Frisk.friskList.length > 0) {
         friskPop = Frisk.friskList.pop();
         friskPop.image.remove();
         delete friskPop;
+        ChangeCountLabel();
     }
+}
+
+function ChangeCountLabel() {
+    let [red, green] = DecideColorInRange_RedGreen(0, FRISK_LIMIT, Frisk.friskList.length);
+    let redStr = red.toString();
+    let greenStr = green.toString();
+    countLabel.style.color = "rgb(" + redStr + ", " + greenStr + ", 0)";
+    countLabel.innerHTML = Frisk.friskList.length.toString() + " / " + FRISK_LIMIT;
+}
+
+function DecideColorInRange_RedGreen(min, max, num) {
+    let range = max - min;
+    let diff = num - min;
+    let ratio = diff / range;
+
+    let R = 220 * ratio;
+    let G = 220 - (220 * ratio);
+    return [R, G];
 }
