@@ -121,7 +121,7 @@ class Frisk {
 
 function spawnFrisk() {
     if (Frisk.friskList.length < FRISK_LIMIT) {
-        let frisk = new Frisk();
+        new Frisk();
     }
 }
 
