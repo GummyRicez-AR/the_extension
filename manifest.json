@@ -16,6 +16,10 @@
   "web_accessible_resources": [
     {
       "resources": ["graphics/*.png"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["userpref.json"],
       "matches": ["https://*/*"]
     }
   ]

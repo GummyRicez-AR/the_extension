@@ -22,7 +22,19 @@ h1 {
     text-shadow: 1px 1px 2px black;
 }
 
-button {
+#friskSection {
+    margin: auto;
+    width: 99%;
+}
+
+#friskText {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.button {
     display: inline-block;
     margin: 10px 0px 10px 0px;
     font-size: 18px;
@@ -34,4 +46,24 @@ button {
     margin: auto;
     width: 100%;
     justify-content: center;
+}
+
+#friskInput {
+    display: inline;
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 50%;
+    text-align: center;
+    font-weight: bold;
+}
+
+#fInputConfirm {
+    margin-left: 30%;
+    margin-right: 30%;
+    width: 40%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
