@@ -5,7 +5,7 @@ var deleteButton = document.createElement("button");
 deleteButton.id = "remover";
 var countLabel = document.createElement("p");
 countLabel.id = "counter";
-const MOVE_INTERVAL = 20;
+const MOVE_INTERVAL = 20; // in milliseconds
 var FRISK_LIMIT = 50;
 
 try {
@@ -33,6 +33,7 @@ function DecideColorInRange_RedGreen(min, max, num) {
 
 function FriskButtonStyle(button) {
     button.style.fontSize = "16px";
+    button.style.width = "120px";
     button.style.height = "30px";
     button.style.zIndex = "100";
     button.style.position = "fixed";
@@ -62,13 +63,16 @@ document.body.onload = () => {
 
     // add counter to count how mnay frisks there are
     countLabel.style.position = "fixed";
-    countLabel.style.bottom = "10px";
+    countLabel.style.left = "120px";
+    countLabel.style.bottom = "0px";
     countLabel.style.height = "30px";
     countLabel.style.width = "100px";
     countLabel.style.zIndex = "100";
-    //countLabel.style.backgroundColor = "gray";
     countLabel.style.fontWeight = "bold";
+    countLabel.style.marginBottom = "0px";
+    countLabel.style.marginTop = "0px";
     countLabel.style.textAlign = "center";
+    //countLabel.style.textAlign = "center";
     countLabel.style.webkitTextStrokeColor = "black";
     countLabel.style.webkitTextStrokeWidth = "1px";
     countLabel.style.fontSize = "25px";
