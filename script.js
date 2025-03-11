@@ -93,11 +93,14 @@ if (bigHeader) {
     bigHeader.style.color = "red";
 }
 
-// EXPERIMENTAL: having multiple frisks on the screen
 class Frisk {
     static friskList = [];
     image = document.createElement("img");
     #x = 0;
+    #y = 0;
+    currYVelocity = 0;
+    #bounceProgress = 0;
+    bouncing = false;
     #target = 0;
     #moveSpeed = 0;
     currentlyMoving = true;
@@ -149,6 +152,21 @@ class Frisk {
         }
     }
 
+    bounce() {
+        this.#y += this.currYVelocity;
+        this.image.style.bottom = this.#y.toString() + "px";
+        this.currYVelocity -= 15 * (MOVE_INTERVAL / 1000);
+        if (this.#y <= 0) {
+            this.#y = 0;
+            this.image.style.bottom = "0px";
+            if (!this.currentlyMoving) {
+                this.bouncing = false;
+            } else {
+                this.currYVelocity = 3;
+            }
+        }
+    }
+
     moveFrisk() {
         if (this.#x > this.#target) { // frisk wants to move to the left
             this.#moveLeft();
@@ -159,6 +177,9 @@ class Frisk {
 
     static moveFrisks() {
         Frisk.friskList.forEach(i => {
+            if (i.bouncing) {
+                i.bounce();
+            }
             if (i.currentlyMoving) {
                 i.moveFrisk();
             } else {
@@ -166,6 +187,8 @@ class Frisk {
                 if (i.timer <= 0) {
                     i.timer = 0;
                     i.currentlyMoving = true;
+                    i.bouncing = true;
+                    i.currYVelocity = 3;
                 }
             }
         });
@@ -192,6 +215,6 @@ function ChangeCountLabel() {
     let [red, green] = DecideColorInRange_RedGreen(0, FRISK_LIMIT, Frisk.friskList.length);
     let redStr = red.toString();
     let greenStr = green.toString();
-    countLabel.style.color = "rgb(" + redStr + ", " + greenStr + ", 0)";
+    //countLabel.style.color = "rgb(" + redStr + ", " + greenStr + ", 0)";
     countLabel.innerHTML = Frisk.friskList.length.toString() + " / " + FRISK_LIMIT;
 }

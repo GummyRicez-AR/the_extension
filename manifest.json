@@ -15,12 +15,8 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["graphics/*.png"],
+      "resources": ["graphics/*.png", "userpref.json", "Undertale.ttf"],
       "matches": ["<all_urls>"]
-    },
-    {
-      "resources": ["userpref.json"],
-      "matches": ["https://*/*"]
     }
   ]
 }
