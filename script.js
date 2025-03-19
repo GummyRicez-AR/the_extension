@@ -1,3 +1,5 @@
+"use strict";
+
 var userPreferences;
 var spawnButton = document.createElement("button");
 spawnButton.id = "spawner";
@@ -9,7 +11,7 @@ const MOVE_INTERVAL = 20; // in milliseconds
 var FRISK_LIMIT = 50;
 
 try {
-    url = chrome.runtime.getURL("/userpref.json");
+    let url = chrome.runtime.getURL("/userpref.json");
     console.log(url);
     fetch(url).then(response => response.json())
         .then(data => {
@@ -17,6 +19,7 @@ try {
             FRISK_LIMIT = userPreferences["preferences"]["maxFrisks"];
             console.log("limit set to " + userPreferences["preferences"]["maxFrisks"].toString());
         })
+    let font = chrome.runtime.getURL("/Undertale.ttf");
 } catch (error) {
     console.log(error);
 }
@@ -44,7 +47,7 @@ function FriskButtonStyle(button) {
 
 document.body.onload = () => {
     // upon webpage loading, start the FRISK interval 
-    friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
+    let friskTime = setInterval(Frisk.moveFrisks, MOVE_INTERVAL);
 
     // add a button capable of spawning more frisks and an event listener for the button
     spawnButton.style.bottom = "0px";
@@ -96,39 +99,66 @@ if (bigHeader) {
 class Frisk {
     static friskList = [];
     image = document.createElement("img");
-    #x = 0;
-    #y = 0;
+    x = 0;
+    y = 0;
     currYVelocity = 0;
-    #bounceProgress = 0;
-    bouncing = false;
+    bouncing = true;
     #target = 0;
     #moveSpeed = 0;
     currentlyMoving = true;
     timer = 0;
+    beingDragged = false;
+
+    dragFrisk = (event) => {
+        console.log(`dx: ${event.movementX}, dy: ${event.movementY}`);
+        this.x += event.movementX;
+        this.y -= event.movementY;
+        this.image.style.bottom = this.y.toString() + "px";
+        this.image.style.left = this.x.toString() + "px";
+    }
+    dragFrisk = this.dragFrisk.bind(this);
+
+    mouseLeaveWhileDragging(event) {
+        this.beingDragged = false;
+        this.image.removeEventListener("mousemove", this.dragFrisk);
+    }
 
     constructor() {
         this.image.src = chrome.runtime.getURL("graphics/SOU_Frisk.png");
+        //this.image.style.padding = "70px 70px 70px 70px";
+        this.image.draggable = false;
         this.image.style.width = "10%";
         this.image.style.position = "fixed";
         this.image.style.bottom = "0px";
         this.image.style.left = "0px";
         this.#moveSpeed = Math.floor((Math.random() * 2) + 2); // random value between 2 - 4
-        this.#x = 0;
         this.#target = Math.floor(Math.random() * (window.innerWidth * 0.9)); // random between 0% - 90% of window width
         Frisk.friskList.push(this);
         document.body.append(this.image);
-        this.image.addEventListener("click", () => {
-            // do something here ig
-        });
+
+        this.image.addEventListener("mousedown", (mouseEvent) => {
+            console.log("mouse down detected");
+            this.beingDragged = true;
+            console.log(this.x);
+            console.log(`X: ${mouseEvent.clientX}, Y: ${mouseEvent.clientY}, left: ${this.x}, bottom: ${this.y}`);
+            this.image.addEventListener("mousemove", this.dragFrisk);
+            this.image.addEventListener("mouseleave", this.mouseLeaveWhileDragging.bind(this));
+        })
+        this.image.addEventListener("mouseup", () => {
+            console.log("sadness Q~Q");
+            this.beingDragged = false;
+            this.image.removeEventListener("mousemove", this.dragFrisk);
+            this.image.removeEventListener("mouseleave", this.mouseLeaveWhileDragging.bind(this));
+        })
     }
 
     #moveLeft() {
-        this.#x -= this.#moveSpeed;
+        this.x -= this.#moveSpeed;
         this.image.style.transform = "scaleX(1)";
-        this.image.style.left = this.#x.toString() + "px";
-        if (this.#x <= this.#target) { // if frisk is to the left of target after moving
+        this.image.style.left = this.x.toString() + "px";
+        if (this.x <= this.#target) { // if frisk is to the left of target after moving
             this.image.style.left = this.#target.toString() + "px";
-            this.#x = this.#target;
+            this.x = this.#target;
             this.currentlyMoving = false;
             // decide new timer, target, and move speed
             this.timer = Math.floor((Math.random() * 2000) + 1000);
@@ -138,12 +168,12 @@ class Frisk {
     }
 
     #moveRight() {
-        this.#x += this.#moveSpeed;
+        this.x += this.#moveSpeed;
         this.image.style.transform = "scaleX(-1)";
-        this.image.style.left = this.#x.toString() + "px";
-        if (this.#x >= this.#target) { // if frisk is to the right of target after moving
+        this.image.style.left = this.x.toString() + "px";
+        if (this.x >= this.#target) { // if frisk is to the right of target after moving
             this.image.style.left = this.#target.toString() + "px";
-            this.#x = this.#target;
+            this.x = this.#target;
             this.currentlyMoving = false;
             // decide new timer, target, and move speed
             this.timer = Math.floor((Math.random() * 2000) + 1000);
@@ -153,11 +183,11 @@ class Frisk {
     }
 
     bounce() {
-        this.#y += this.currYVelocity;
-        this.image.style.bottom = this.#y.toString() + "px";
+        this.y += this.currYVelocity;
+        this.image.style.bottom = this.y.toString() + "px";
         this.currYVelocity -= 15 * (MOVE_INTERVAL / 1000);
-        if (this.#y <= 0) {
-            this.#y = 0;
+        if (this.y <= 0) {
+            this.y = 0;
             this.image.style.bottom = "0px";
             if (!this.currentlyMoving) {
                 this.bouncing = false;
@@ -168,7 +198,7 @@ class Frisk {
     }
 
     moveFrisk() {
-        if (this.#x > this.#target) { // frisk wants to move to the left
+        if (this.x > this.#target) { // frisk wants to move to the left
             this.#moveLeft();
         } else { // frisk wants to move to the right
             this.#moveRight();
@@ -177,6 +207,10 @@ class Frisk {
 
     static moveFrisks() {
         Frisk.friskList.forEach(i => {
+            if (i.beingDragged) {
+                return;
+            }
+
             if (i.bouncing) {
                 i.bounce();
             }
@@ -204,9 +238,8 @@ function SpawnFrisk() {
 
 function DeleteFrisk() {
     if (Frisk.friskList.length > 0) {
-        friskPop = Frisk.friskList.pop();
+        let friskPop = Frisk.friskList.pop();
         friskPop.image.remove();
-        delete friskPop;
         ChangeCountLabel();
     }
 }
